@@ -1,0 +1,240 @@
+.login-panel {
+    padding: 8px 15px;
+    font-size: 16px;
+}
+
+.login-panel .login-button, .login-panel .register-button {
+    display: inline-block;
+    padding: 0 10px;
+    color: navy;
+}
+
+.login-panel .login-button:hover, .login-panel .register-button:hover {
+    text-decoration: none;
+    color: lightseagreen;
+}
+
+.logout-button {
+    margin-left: 10px;
+    color: mediumblue;
+}
+
+.logout-button:hover {
+    text-decoration: none;
+    color: steelblue;
+}
+
+.logged-user-name {
+    color: darkorchid;
+    font-weight: bolder;
+    letter-spacing: 1px;
+}
+
+#loginForm, #registerForm {
+    width:500px;
+}
+
+.form-error-small {
+    margin-left: 33.3%;
+    margin-top: 1px;
+    padding-left: 16px;
+    color: palevioletred;
+    font-size: 12px;
+}
+
+#mapsList {
+    width: 300px;
+    margin: 10px 0;
+}
+
+.mapListItem {
+    padding: 2px 0;
+    border-top: 1px solid lightcyan;
+}
+
+.mapListItem:last-child {
+    border-bottom: 1px solid lightcyan;
+}
+
+.mapListItemLink {
+    display: block;
+    padding: 2px 0;
+}
+
+.mapListItem:hover {
+    background: #ecfff8;
+}
+
+/*.createMap {
+    margin-top: 15px;
+}*/
+
+/* Отрисовка карты */
+.mapViewHeader {
+    font-size: 20px;
+    font-family: Serif;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.mapViewHeader .mapEditTitle{
+    font-weight: bold;
+    padding: 2px 6px;
+    border: 1px solid #ccc;
+}
+
+.mapViewTable {
+    /* border-collapse: collapse; */
+}
+
+.mapViewTable td {
+    height: 80px;
+    width: 80px;
+    border: 1px solid #bbb;
+    border-collapse: collapse;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.mapViewTable td.empty {
+    background: white;
+    border: 1px #ccc dotted;
+}
+
+.type-jungle {
+    /*background: lawngreen;*/
+    background: url(../images/jungle.jpeg);
+    background-size: contain;
+}
+
+
+.type-desert {
+    /*background: cornsilk;*/
+    background: url(../images/sands.jpg);
+    background-size: contain;
+}
+
+.type-none {
+    background: mintcream;
+}
+
+.type-mountain {
+    background: url(../images/mountain3.png) no-repeat center center;
+    background-size: contain;
+}
+
+.mapViewTable td.border-left-river {
+    border-left: 3px dodgerblue dashed;
+}
+
+.mapViewTable td.border-right-river {
+    border-right: 3px dodgerblue dashed;
+}
+
+.mapViewTable td.border-top-river {
+    border-top: 3px dodgerblue dashed;
+}
+
+.mapViewTable td.border-bottom-river {
+    border-bottom: 3px dodgerblue dashed;
+}
+
+.mapViewTable td.border-left-edge {
+    border-left: 2px solid black;
+}
+
+.mapViewTable td.border-right-edge {
+    border-right: 2px solid black;
+}
+
+.mapViewTable td.border-top-edge {
+    border-top: 2px solid black;
+}
+
+.mapViewTable td.border-bottom-edge {
+    border-bottom: 2px solid black;
+}
+
+.mapViewTable td.editable {
+    cursor: cell;
+}
+
+.mapViewObject {
+    width: 100%;
+    height: 100%;
+}
+.type-flag {
+    background: url(../images/flag.png);
+    background-size: contain;
+    line-height: 58px;
+    font-size: 20px;
+    font-weight: bold;
+    color: green;
+}
+
+.type-watering {
+    background: url(../images/water.png) no-repeat center center;
+    background-size: 80%;
+}
+
+.type-village {
+    background: url(../images/hut.png);
+    background-size: contain;
+}
+
+.type-chest {
+    background: url(../images/chest.png) no-repeat center bottom;
+    /*background-size: contain;*/
+    background-size: 60px 60px; /* или сделать 80% ? */
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 18px;
+    color: darkgoldenrod;
+}
+
+.type-guard {
+    background: url(../images/warrior.png) no-repeat center center;
+    background-size: contain;
+}
+
+.editMapPanel {
+    margin-top: 30px;
+}
+
+.editMapButton {
+    display:inline-block;
+    margin-right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 7px;
+    border: 2px solid #777;
+    cursor: pointer;
+    transition: 0.6s;
+}
+
+.editMapButton.checked {
+    border: 2px solid indianred;
+    box-shadow: 0 0 10px red;
+    transition: 0.6s;
+}
+
+.editMapButton.type-empty {
+    background: url(../images/red-cross.png) no-repeat center center;
+    background-size: 80%;
+}
+
+.editMapButton.type-river_right {
+    border-right: 3px dodgerblue dashed;
+}
+
+.editMapButton.type-river_bottom {
+    border-bottom: 3px dodgerblue dashed;
+}
+
+.editMapSaveResetBtns {
+    margin: 15px 0;
+}
+
+.editMapSaveResetBtns div {
+    margin: 0 20px;
+}
