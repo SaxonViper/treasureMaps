@@ -74,6 +74,10 @@
                 </div>
             </div>
 
+            <div>
+                <button class="deleteMap btn btn-danger" v-if="viewingMap !== 'new'" @click.prevent="deleteMap">Удалить</button>
+            </div>
+
             <button class="btn btn-primary mapToImage" @click.prevent="mapToImage">Изображение</button>
             <div ref="mapImageContainer">
                 <!-- <img class="mapGeneratedImage" :src="mapImageUrl" @click.prevent="downloadImage"/> -->
@@ -537,11 +541,7 @@
                 const options = {
                     type: 'dataURL'
                 };
-                const imgContainer = this.$refs.mapImageContainer;
-                let that = this;
                 html2canvas(el, options).then(result => {
-                    // this.mapImageUrl = result;
-                    // imgContainer.appendChild(result);
                     this.mapImageUrl = result.toDataURL('image/jpg');
 
                     // Открываем ссылку на скачивание
@@ -552,14 +552,15 @@
                     });
 
                 });
-                // this.mapImageUrl = await this.$html2canvas(el, options);
             },
-            downloadImage() {
-                const downloadButton = this.$refs.downloadMapImage;
-                downloadButton.click();
-                /*let win = window.open();
-                let url = this.mapImageUrl.replace("image/png", "image/octet-stream")
-                win.document.write('<iframe src="' + url  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');*/
+            deleteMap() {
+                if (confirm('Действительно удалить карту?')) {
+                    axios.delete('/treasure_maps/' + this.viewingMap).then(response => {
+                        if (response.data && response.data.success) {
+                            this.backToList();
+                        }
+                    });
+                }
             }
         }
     }

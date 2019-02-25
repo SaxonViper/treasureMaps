@@ -328,8 +328,14 @@
     background-size: contain;
 }
 
+.deleteMap {
+    margin-top: 15px;
+}
+
 .mapToImage {
     margin-top: 15px;
-    padding-left: 16px;
-    padding-right: 16px;
+}
+
+.editMapStart, .deleteMap, .mapToImage {
+    width: 126px;
 }

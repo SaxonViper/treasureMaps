@@ -295,4 +295,19 @@ class TreasureMapController extends Controller
         ]);
     }
 
+    public function deleteMap($mapId)
+    {
+        $map = TreasureFieldMap::query()->find($mapId);
+        if (!$map) {
+            throw new \Exception('Не найдена карта с указанным ID');
+        }
+
+        $map->is_deleted = true;
+        $map->save();
+
+        return [
+            'success' => true
+        ];
+    }
+
 }

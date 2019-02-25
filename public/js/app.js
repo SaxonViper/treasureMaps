@@ -2162,6 +2162,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /*import VueHtml2Canvas from 'vue-html2canvas';
 Vue.use(VueHtml2Canvas);*/
@@ -2627,11 +2631,7 @@ Vue.use(VueHtml2Canvas);*/
       var options = {
         type: 'dataURL'
       };
-      var imgContainer = this.$refs.mapImageContainer;
-      var that = this;
       html2canvas__WEBPACK_IMPORTED_MODULE_0___default()(el, options).then(function (result) {
-        // this.mapImageUrl = result;
-        // imgContainer.appendChild(result);
         _this5.mapImageUrl = result.toDataURL('image/jpg'); // Открываем ссылку на скачивание
 
         _this5.$nextTick(function () {
@@ -2639,14 +2639,18 @@ Vue.use(VueHtml2Canvas);*/
           var downloadButton = this.$refs.downloadMapImage;
           downloadButton.click();
         });
-      }); // this.mapImageUrl = await this.$html2canvas(el, options);
+      });
     },
-    downloadImage: function downloadImage() {
-      var downloadButton = this.$refs.downloadMapImage;
-      downloadButton.click();
-      /*let win = window.open();
-      let url = this.mapImageUrl.replace("image/png", "image/octet-stream")
-      win.document.write('<iframe src="' + url  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');*/
+    deleteMap: function deleteMap() {
+      var _this6 = this;
+
+      if (confirm('Действительно удалить карту?')) {
+        axios.delete('/treasure_maps/' + this.viewingMap).then(function (response) {
+          if (response.data && response.data.success) {
+            _this6.backToList();
+          }
+        });
+      }
     }
   }
 });
@@ -45337,7 +45341,7 @@ var render = function() {
             ],
             on: {
               close: function($event) {
-                _vm.closeModal("loginForm")
+                return _vm.closeModal("loginForm")
               }
             }
           },
@@ -45581,7 +45585,7 @@ var render = function() {
             ],
             on: {
               close: function($event) {
-                _vm.closeModal("registerForm")
+                return _vm.closeModal("registerForm")
               }
             }
           },
@@ -45961,7 +45965,7 @@ var render = function() {
                       on: {
                         click: function($event) {
                           $event.preventDefault()
-                          _vm.showMap(map.id)
+                          return _vm.showMap(map.id)
                         }
                       }
                     },
@@ -46031,7 +46035,7 @@ var render = function() {
                         ],
                         on: {
                           click: function($event) {
-                            _vm.editTableCell(rowNumber, colNumber)
+                            return _vm.editTableCell(rowNumber, colNumber)
                           }
                         }
                       },
@@ -46084,7 +46088,7 @@ var render = function() {
                             attrs: { title: editObj.title },
                             on: {
                               click: function($event) {
-                                _vm.clickEditButton(code)
+                                return _vm.clickEditButton(code)
                               }
                             }
                           })
@@ -46101,7 +46105,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.addRow("top")
+                                  return _vm.addRow("top")
                                 }
                               }
                             },
@@ -46113,7 +46117,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                _vm.slipCells("top")
+                                return _vm.slipCells("top")
                               }
                             }
                           }),
@@ -46125,7 +46129,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.deleteRow("top")
+                                  return _vm.deleteRow("top")
                                 }
                               }
                             },
@@ -46141,7 +46145,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.addRow("left")
+                                  return _vm.addRow("left")
                                 }
                               }
                             },
@@ -46153,7 +46157,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                _vm.slipCells("left")
+                                return _vm.slipCells("left")
                               }
                             }
                           }),
@@ -46165,7 +46169,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.deleteRow("left")
+                                  return _vm.deleteRow("left")
                                 }
                               }
                             },
@@ -46181,7 +46185,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.addRow("right")
+                                  return _vm.addRow("right")
                                 }
                               }
                             },
@@ -46193,7 +46197,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                _vm.slipCells("right")
+                                return _vm.slipCells("right")
                               }
                             }
                           }),
@@ -46205,7 +46209,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.deleteRow("right")
+                                  return _vm.deleteRow("right")
                                 }
                               }
                             },
@@ -46221,7 +46225,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.addRow("bottom")
+                                  return _vm.addRow("bottom")
                                 }
                               }
                             },
@@ -46233,7 +46237,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                _vm.slipCells("bottom")
+                                return _vm.slipCells("bottom")
                               }
                             }
                           }),
@@ -46245,7 +46249,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  _vm.deleteRow("bottom")
+                                  return _vm.deleteRow("bottom")
                                 }
                               }
                             },
@@ -46276,6 +46280,24 @@ var render = function() {
                     ])
               ])
             : _vm._e(),
+          _vm._v(" "),
+          _c("div", [
+            _vm.viewingMap !== "new"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "deleteMap btn btn-danger",
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.deleteMap($event)
+                      }
+                    }
+                  },
+                  [_vm._v("Удалить")]
+                )
+              : _vm._e()
+          ]),
           _vm._v(" "),
           _c(
             "button",

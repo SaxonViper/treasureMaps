@@ -39,4 +39,5 @@ Route::get('/treasure_maps/add_cell', 'TreasureMapController@createCell');
 // Попытаемся собрать всю инфу для отрисовки карты
 Route::get('/treasure_maps/{id}', 'TreasureMapController@getMapData')->where('id', '[0-9]+');
 Route::post('/treasure_maps/{id}', 'TreasureMapController@saveMapData')->where('id', '[0-9]+');
+Route::delete('/treasure_maps/{id}', 'TreasureMapController@deleteMap')->where('id', '[0-9]+');
 Route::get('/treasure_maps/make_fake', 'TreasureMapController@generateFakeMap');
