@@ -19,7 +19,7 @@
                 <span v-else>{{mapData.title}}</span>
             </div>
             <div class="mapViewBody">
-                <table class="mapViewTable">
+                <table class="mapViewTable" ref="mapViewTable">
                     <tr v-for="(cellsRow, rowNumber) in mapData.cells">
                         <td v-for="(cell, colNumber) in cellsRow" v-bind:class="[getCellClasses(cell), {editable: editButtonChecked}]" @click="editTableCell(rowNumber, colNumber)">
                             <div v-bind:class="['mapViewObject']">
@@ -30,17 +30,41 @@
                 </table>
             </div>
 
-            <div class="editMapPanel" v-if="isEditable">
+            <div class="editMapWrapper" v-if="isEditable">
                 <button class="editMapStart btn btn-primary" v-if="!isEditing" @click="isEditing = true">Редактировать</button>
 
-                <div class="editMapButtons" v-else>
-                    <div v-for="(editObj, code) in editObjects" :title="editObj.title" @click="clickEditButton(code)"
-                         v-bind:class="[{
-                            checked: editButtonChecked === code
-                         }, 'editMapButton', 'type-' + code]"
+                <div classs="editMapPanel" v-else>
+                    <div class="mapTypeButtons">
+                        <div v-for="(editObj, code) in editObjects" :title="editObj.title" @click="clickEditButton(code)"
+                             v-bind:class="[{
+                                checked: editButtonChecked === code
+                             }, 'mapTypeButton', 'type-' + code]"
 
-                    >
+                        >
+                        </div>
+                    </div>
 
+                    <div class="addDeleteRowsButtons">
+                        <div class="addDeleteRowTop">
+                            <button class="addRow" @click.prevent="addRow('top')">+</button>
+                            <button class="moveRow" @click.prevent="slipCells('top')"></button>
+                            <button class="deleteRow" @click.prevent="deleteRow('top')">-</button>
+                        </div>
+                        <div class="addDeleteRowLeft">
+                            <button class="addRow" @click.prevent="addRow('left')">+</button>
+                            <button class="moveRow" @click.prevent="slipCells('left')"></button>
+                            <button class="deleteRow" @click.prevent="deleteRow('left')">-</button>
+                        </div>
+                        <div class="addDeleteRowRight">
+                            <button class="addRow" @click.prevent="addRow('right')">+</button>
+                            <button class="moveRow" @click.prevent="slipCells('right')"></button>
+                            <button class="deleteRow" @click.prevent="deleteRow('right')">-</button>
+                        </div>
+                        <div class="addDeleteRowBottom">
+                            <button class="addRow" @click.prevent="addRow('bottom')">+</button>
+                            <button class="moveRow" @click.prevent="slipCells('bottom')"></button>
+                            <button class="deleteRow" @click.prevent="deleteRow('bottom')">-</button>
+                        </div>
                     </div>
 
                     <div class="editMapSaveResetBtns">
@@ -49,11 +73,21 @@
                     </div>
                 </div>
             </div>
+
+            <button class="btn btn-primary mapToImage" @click.prevent="mapToImage">Изображение</button>
+            <div ref="mapImageContainer">
+                <!-- <img class="mapGeneratedImage" :src="mapImageUrl" @click.prevent="downloadImage"/> -->
+                <a :href="mapImageUrl" :download="mapImageFilename" style="display: none" ref="downloadMapImage"></a>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    /*import VueHtml2Canvas from 'vue-html2canvas';
+    Vue.use(VueHtml2Canvas);*/
+    import html2canvas from 'html2canvas';
+
     export default {
         data() {
             return {
@@ -123,7 +157,8 @@
                     }
 
                 },
-                editButtonChecked: null
+                editButtonChecked: null,
+                mapImageUrl: null
             }
         },
         computed: {
@@ -160,10 +195,15 @@
                 }
 
                 return borders;
+            },
+            mapImageFilename() {
+                let filename = (this.mapData.title ? this.mapData.title: 'Без имени') + '.jpg';
+                if (this.viewingMap && this.viewingMap !== 'new') {
+                    filename = (this.viewingMap.toString() + '-') + filename;
+                }
+                return filename;
             }
-            // getCellClasses(cell) {
-            //     return 'cell-classes';
-            // }
+
         },
         methods: {
             loadMaps() {
@@ -353,7 +393,7 @@
                            posx: col,
                            posy: row,
                            type: 'none',
-                           is_existing: false
+                           is_existing: true
                         });
                     }
                     cells[row] = cellsRow;
@@ -366,7 +406,160 @@
                     cells: cells,
                     rivers: []
                 };
-                console.log(this.mapData);
+            },
+            reindexCells(dx, dy) {
+                // Сложная логика - мы меняем у всех ячеек номера, заменяя при этом все отсылки на них (это posx, posy внутри ячеек, а также реки)
+                let newCells = {};
+                for (let rowNumber in this.mapData.cells) {
+                    let newRowNumber = parseInt(rowNumber) + dy;
+                    newCells[newRowNumber] = {};
+                    for (let colNumber in this.mapData.cells[rowNumber]) {
+                        let cell = this.mapData.cells[rowNumber][colNumber];
+                        cell.posx = cell.posx + dx;
+                        cell.posy = cell.posy + dy;
+
+                        // Вставляем в новый объект по новому адресу
+                        newCells[newRowNumber][parseInt(colNumber) + dx] = cell;
+                    }
+                }
+
+                console.log(newCells);
+                this.mapData.cells = newCells;
+
+                this.mapData.rivers.forEach(riverData => {
+                    riverData.row = parseInt(riverData.row) + dy;
+                    riverData.col = parseInt(riverData.col) + dx;
+                });
+
+            },
+            addRow(direction) {
+                // Добавляем ряд с одной из сторон
+                // Если добавляем слева или сверху - нужно переиндексировать ячейки
+                switch (direction) {
+                    case 'top':
+                        this.reindexCells(0, 1);
+                        this.addEmptyRow(1);
+                        break;
+
+                    case 'bottom':
+                        this.addEmptyRow(this.mapData.height + 1);
+                        break;
+
+                    case 'left':
+                        this.reindexCells(1, 0);
+                        this.addEmptyCol(1);
+                        break;
+
+                    case 'right':
+                        this.addEmptyCol(this.mapData.width + 1);
+                }
+
+                console.log(this.mapData.cells);
+                console.log(this.mapData.width);
+                console.log(this.mapData.height);
+            },
+            emptyCell(row, col) {
+                // Пустая ячейка для вставки в массив
+                return {
+                    posx: col,
+                    posy: row,
+                    is_existing: false,
+                    type: 'none'
+                };
+            },
+            addEmptyRow(rowNumber) {
+                // todo - Проверить надо ли, пустая ли строка?!
+                Vue.set(this.mapData.cells, rowNumber, {});
+                for (let colNumber = 1; colNumber <= this.mapData.width; colNumber++) {
+                    Vue.set(this.mapData.cells[rowNumber], colNumber, this.emptyCell(rowNumber, colNumber));
+                }
+
+                this.mapData.height++;
+            },
+            addEmptyCol(colNumber) {
+                for (let rowNumber = 1; rowNumber <= this.mapData.height; rowNumber++) {
+                    Vue.set(this.mapData.cells[rowNumber], colNumber, this.emptyCell(rowNumber, colNumber));
+                }
+
+                this.mapData.width++;
+            },
+            deleteRow(direction) {
+                // Удаляем ряд с одной из сторон
+                // Если удаялем слева или сверху - нужно переиндексировать ячейки
+                switch (direction) {
+                    case 'top':
+                        this.removeCellRow(1);
+                        this.reindexCells(0, -1);
+                        break;
+
+                    case 'bottom':
+                        this.removeCellRow(this.mapData.height);
+                        break;
+
+                    case 'left':
+                        this.removeCellCol(1);
+                        this.reindexCells(-1, 0);
+                        break;
+
+                    case 'right':
+                        this.removeCellCol(this.mapData.width);
+                }
+
+                console.log(this.mapData.cells);
+                console.log(this.mapData.width);
+                console.log(this.mapData.height);
+            },
+            removeCellRow(rowNumber) {
+                Vue.delete(this.mapData.cells, rowNumber);
+                this.mapData.height--;
+            },
+            removeCellCol(colNumber) {
+                for (let rowNumber = 1; rowNumber <= this.mapData.height; rowNumber++) {
+                    Vue.delete(this.mapData.cells[rowNumber], colNumber);
+                }
+                this.mapData.width--;
+            },
+            slipCells(direction) {
+                // "Смещение" вниз - это то же самое, что создать пустую строчку вверху и удалить нижнюю
+                this.addRow(this.getOppositeDirection(direction));
+                this.deleteRow(direction);
+            },
+            getOppositeDirection(direction) {
+                return {
+                    left: 'right',
+                    right: 'left',
+                    top: 'bottom',
+                    bottom: 'top'
+                }[direction];
+            },
+            mapToImage() {
+                const el = this.$refs.mapViewTable;
+                const options = {
+                    type: 'dataURL'
+                };
+                const imgContainer = this.$refs.mapImageContainer;
+                let that = this;
+                html2canvas(el, options).then(result => {
+                    // this.mapImageUrl = result;
+                    // imgContainer.appendChild(result);
+                    this.mapImageUrl = result.toDataURL('image/jpg');
+
+                    // Открываем ссылку на скачивание
+                    this.$nextTick(function () {
+                        // DOM updated
+                        const downloadButton = this.$refs.downloadMapImage;
+                        downloadButton.click();
+                    });
+
+                });
+                // this.mapImageUrl = await this.$html2canvas(el, options);
+            },
+            downloadImage() {
+                const downloadButton = this.$refs.downloadMapImage;
+                downloadButton.click();
+                /*let win = window.open();
+                let url = this.mapImageUrl.replace("image/png", "image/octet-stream")
+                win.document.write('<iframe src="' + url  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');*/
             }
         }
     }

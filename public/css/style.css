@@ -197,11 +197,11 @@
     background-size: contain;
 }
 
-.editMapPanel {
+.editMapWrapper {
     margin-top: 30px;
 }
 
-.editMapButton {
+.mapTypeButton {
     display:inline-block;
     margin-right: 20px;
     width: 60px;
@@ -212,22 +212,22 @@
     transition: 0.6s;
 }
 
-.editMapButton.checked {
+.mapTypeButton.checked {
     border: 2px solid indianred;
     box-shadow: 0 0 10px red;
     transition: 0.6s;
 }
 
-.editMapButton.type-empty {
+.mapTypeButton.type-empty {
     background: url(../images/red-cross.png) no-repeat center center;
     background-size: 80%;
 }
 
-.editMapButton.type-river_right {
+.mapTypeButton.type-river_right {
     border-right: 3px dodgerblue dashed;
 }
 
-.editMapButton.type-river_bottom {
+.mapTypeButton.type-river_bottom {
     border-bottom: 3px dodgerblue dashed;
 }
 
@@ -237,4 +237,99 @@
 
 .editMapSaveResetBtns div {
     margin: 0 20px;
+}
+
+/* Кнопки добавить/удалить ряд, сдвинуть ячейки */
+.addDeleteRowsButtons {
+    margin-top: 15px;
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.addDeleteRowTop {
+    position: absolute;
+    top: 0;
+    left: 40px;
+}
+
+.addDeleteRowLeft {
+    position: absolute;
+    top: 40px;
+    left: 0;
+}
+
+.addDeleteRowRight {
+    position: absolute;
+    top: 40px;
+    left: 160px;
+}
+
+.addDeleteRowBottom {
+    position: absolute;
+    top: 160px;
+    left: 40px;
+}
+
+.addDeleteRowsButtons button {
+    display: inline-block;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.addDeleteRowsButtons .addRow {
+    background: limegreen;
+    color: white;
+    font-size: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+
+.addDeleteRowsButtons .deleteRow {
+    background: palevioletred;
+    color: white;
+    font-size: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+
+.addDeleteRowTop .deleteRow, .addDeleteRowBottom .deleteRow {
+    left: 80px;
+}
+
+.addDeleteRowTop .moveRow, .addDeleteRowBottom .moveRow {
+    left: 40px;
+}
+
+.addDeleteRowLeft .moveRow, .addDeleteRowRight .moveRow {
+    top: 40px;
+}
+
+.addDeleteRowLeft .deleteRow, .addDeleteRowRight .deleteRow{
+    top: 80px;
+}
+
+.addDeleteRowTop .moveRow {
+    background: url(../images/arrow-up.png);
+    background-size: contain;
+}
+.addDeleteRowLeft .moveRow {
+    background: url(../images/arrow-left.png);
+    background-size: contain;
+}
+.addDeleteRowRight .moveRow {
+    background: url(../images/arrow-right.png);
+    background-size: contain;
+}
+.addDeleteRowBottom .moveRow {
+    background: url(../images/arrow-down.png);
+    background-size: contain;
+}
+
+.mapToImage {
+    margin-top: 15px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
