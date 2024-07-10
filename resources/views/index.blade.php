@@ -3,6 +3,8 @@
 <link rel="stylesheet" href="/css/app.css" />
 <link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" href="/css/modal.css" />
+<link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Signika+Negative:wght@300..700&display=swap" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300..700&display=swap" rel="stylesheet"> -->
 <!-- <script src="/js/bootstrap.js"></script> -->
 <script type="text/javascript">
     $.ajaxSetup({
@@ -45,7 +47,7 @@
 </script> -->
 
 <div id="app">
-    <login-component></login-component>
+    <!-- <login-component></login-component> -->
     <example-component></example-component>
 </div>
 

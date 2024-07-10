@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="component-container">
         <button class="btn btn-success" v-if="!viewingMap" @click.prevent="loadMaps">Список карт</button>
         <button class="btn btn-warning" v-else @click.prevent="backToList">Обратно к списку</button>
 
@@ -13,7 +13,7 @@
             <button class="btn btn-success createMap" @click.prevent="createNewMap">Новая карта</button>
         </div>
 
-        <div id="mapDetails" v-else>
+        <div id="mapDetails" v-else :class="{as_image: preparingImage}">
             <div class="mapViewHeader">
                 <input v-model="mapData.title" type="text" class="mapEditTitle" v-if="isEditing">
                 <span v-else>{{mapData.title}}</span>
@@ -79,8 +79,9 @@
             </div>
 
             <button class="btn btn-primary mapToImage" @click.prevent="mapToImage">Изображение</button>
+            <button class="btn btn-primary mapToImage" @click.prevent="preparingImage = !preparingImage">Debug Image</button>
             <div ref="mapImageContainer">
-                <!-- <img class="mapGeneratedImage" :src="mapImageUrl" @click.prevent="downloadImage"/> -->
+                <!-- <img class="mapGeneratedImageж" :src="mapImageUrl" @click.prevent="downloadImage"/> -->
                 <a :href="mapImageUrl" :download="mapImageFilename" style="display: none" ref="downloadMapImage"></a>
             </div>
         </div>
@@ -162,7 +163,8 @@
 
                 },
                 editButtonChecked: null,
-                mapImageUrl: null
+                mapImageUrl: null,
+                preparingImage: false
             }
         },
         computed: {
@@ -225,6 +227,8 @@
                 axios.get('/treasure_maps/' + mapId).then(response => {
                     if (response.data) {
                         this.mapData = response.data;
+                        // Пока у нас есть карты без флагов, нужно привести их в порядок
+                        this.reindexFlags();
                     }
                     this.viewingMap = mapId;
                 });
@@ -260,7 +264,7 @@
                 return cellClass.join(' ');
             },
             getCellContent(cell) {
-                return cell.type === 'chest' ? cell.object_param : '';
+                return (cell.type === 'chest' || cell.type === 'flag') ? cell.object_param : '';
             },
             clickEditButton(code) {
                 // Если кнопка уже выбрана, то отключаем, иначе включаем
@@ -268,7 +272,8 @@
             },
             editTableCell(rowNumber, colNumber) {
                 if (this.editButtonChecked) {
-
+                    // Флаги требуется пересчитать, если либо добавляем новый, либо сносим старый
+                    let shouldReindexFlags = (this.editButtonChecked === 'flag') || this.mapData.cells[rowNumber][colNumber].type === 'flag';
                     if (this.editObjects[this.editButtonChecked].type === 'object') {
                         if (this.editButtonChecked === 'chest') {
                             let chestAmount = parseInt(prompt('Введите сумму в сундуке'));
@@ -286,10 +291,15 @@
                     } else if (this.editButtonChecked === 'empty') {
                         this.mapData.cells[rowNumber][colNumber].is_existing = false;
                         this.mapData.cells[rowNumber][colNumber].type = 'none';
+                        this.mapData.cells[rowNumber][colNumber].object_param = null;
                     } else if (this.editButtonChecked === 'river_right') {
                         this.addOrRemoveRiver(rowNumber, colNumber, 'right');
                     } else if (this.editButtonChecked === 'river_bottom') {
                         this.addOrRemoveRiver(rowNumber, colNumber, 'bottom');
+                    }
+
+                    if (shouldReindexFlags) {
+                        this.reindexFlags();
                     }
                 }
             },
@@ -384,10 +394,10 @@
                 }
             },
             createNewMap() {
-                // Создаём новую карту, пусть её размер будет 5х5
+                // Создаём новую карту, пусть её размер будет 7x7
                 this.viewingMap = 'new';
-                let newMapWidth = 5;
-                let newMapHeight = 5;
+                let newMapWidth = 7;
+                let newMapHeight = 7;
                 let cells = {};
 
                 for (let row = 1; row <= newMapHeight; row++) {
@@ -536,7 +546,24 @@
                     bottom: 'top'
                 }[direction];
             },
+            reindexFlags() {
+                let flagNumber = 0;
+                for (let rowNumber in this.mapData.cells) {
+                    for (let colNumber in this.mapData.cells[rowNumber]) {
+                        if (this.mapData.cells[rowNumber][colNumber].type === 'flag') {
+                            flagNumber++;
+                            this.mapData.cells[rowNumber][colNumber].object_param = flagNumber;
+                        }
+                    }
+                }
+            },
+            prepareImage() {
+                // Вид для генерации изображения отличается от обычного: подготовим его
+                this.preparingImage = true;
+            },
             mapToImage() {
+                this.preparingImage = true;
+
                 const el = this.$refs.mapViewTable;
                 const options = {
                     type: 'dataURL'
@@ -549,6 +576,7 @@
                         // DOM updated
                         const downloadButton = this.$refs.downloadMapImage;
                         downloadButton.click();
+                        this.preparingImage = false;
                     });
 
                 });

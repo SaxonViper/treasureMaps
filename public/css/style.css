@@ -69,6 +69,11 @@
     margin-top: 15px;
 }*/
 
+.component-container {
+    width: 100%;
+    padding: 0 15px;
+}
+
 /* Отрисовка карты */
 .mapViewHeader {
     font-size: 20px;
@@ -94,6 +99,7 @@
     border-collapse: collapse;
     text-align: center;
     vertical-align: middle;
+    position: relative;
 }
 
 .mapViewTable td.empty {
@@ -103,14 +109,14 @@
 
 .type-jungle {
     /*background: lawngreen;*/
-    background: url(../images/jungle.jpeg);
+    background: url(../images/jungle1.png);
     background-size: contain;
 }
 
 
 .type-desert {
     /*background: cornsilk;*/
-    background: url(../images/sands.jpg);
+    background: url(../images/desert1.png);
     background-size: contain;
 }
 
@@ -119,24 +125,49 @@
 }
 
 .type-mountain {
-    background: url(../images/mountain3.png) no-repeat center center;
+    background: url(../images/mountain4.png) no-repeat center center;
     background-size: contain;
 }
 
 .mapViewTable td.border-left-river {
-    border-left: 3px dodgerblue dashed;
+    border-left: 3px #0014ca dashed;
 }
 
-.mapViewTable td.border-right-river {
-    border-right: 3px dodgerblue dashed;
-}
+/*.mapViewTable td.border-right-river {
+    border-right: 3px #0014ca dashed;
+}*/
 
 .mapViewTable td.border-top-river {
-    border-top: 3px dodgerblue dashed;
+    border-top: 3px #0014ca dashed;
 }
 
 .mapViewTable td.border-bottom-river {
-    border-bottom: 3px dodgerblue dashed;
+    /* border-bottom: 3px #0014ca dashed; */
+}
+
+.mapViewTable td.border-bottom-river:before {
+    content: "";
+    background: url("../images/river1.png") no-repeat center center;
+    background-size: cover;
+    position: absolute;
+    width: 84px;
+    height: 8px;
+    top: 75px;
+    left: -2px;
+    z-index: 1;
+}
+
+
+.mapViewTable td.border-right-river:after {
+    content: "";
+    background: url("../images/river2.png") no-repeat center center;
+    background-size: cover;
+    position: absolute;
+    width: 8px;
+    height: 84px;
+    top: -2px;
+    left: 75px;
+    z-index: 1;
 }
 
 .mapViewTable td.border-left-edge {
@@ -163,13 +194,19 @@
     width: 100%;
     height: 100%;
 }
+
 .type-flag {
-    background: url(../images/flag.png);
+    background: url(../images/flag2.png);
     background-size: contain;
-    line-height: 58px;
-    font-size: 20px;
+    font-size: 34px;
     font-weight: bold;
-    color: green;
+    color: #3a97fb;
+    font-family: "Charm", cursive;
+}
+
+.type-flag .mapViewObject {
+    position: relative;
+    top: 2px
 }
 
 .type-watering {
@@ -183,17 +220,25 @@
 }
 
 .type-chest {
-    background: url(../images/chest.png) no-repeat center bottom;
-    /*background-size: contain;*/
-    background-size: 60px 60px; /* или сделать 80% ? */
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 18px;
-    color: darkgoldenrod;
+    background: url(../images/chest2.png) no-repeat center bottom;
+    background-size: contain;
+    /* background-size: 60px 60px; /* или сделать 80% ? */
+    font-size: 30px;
+    font-weight: 600;
+    /* color: #f70bb7; */
+    color: #f11497;
+    font-family: "Signika Negative", sans-serif;
+    letter-spacing: -1px;
+}
+
+.type-chest .mapViewObject {
+    position: relative;
+    top: 27px;
+    left: -5px;
 }
 
 .type-guard {
-    background: url(../images/warrior.png) no-repeat center center;
+    background: url(../images/swords.png) no-repeat center center;
     background-size: contain;
 }
 
@@ -224,11 +269,11 @@
 }
 
 .mapTypeButton.type-river_right {
-    border-right: 3px dodgerblue dashed;
+    border-right: 3px #0014ca dashed;
 }
 
 .mapTypeButton.type-river_bottom {
-    border-bottom: 3px dodgerblue dashed;
+    border-bottom: 3px #0014ca dashed;
 }
 
 .editMapSaveResetBtns {
@@ -337,5 +382,83 @@
 }
 
 .editMapStart, .deleteMap, .mapToImage {
-    width: 126px;
+    width: 130px;
+}
+
+
+/* А тут будут настройки для "распечатки" карт, т.е. представления их как картинок */
+.as_image {
+    min-width: 1500px;
+    overflow-x: scroll;
+    background: white;
+}
+
+.as_image td {
+    height: 200px;
+    width: 200px;
+    border: 2px solid #bbb;
+}
+
+.as_image td.border-left-edge {
+    border-left: 4px solid black;
+}
+
+.as_image td.border-top-edge {
+    border-top: 4px solid black;
+}
+
+.as_image td.border-right-edge {
+    border-right: 4px solid black;
+}
+
+.as_image td.border-bottom-edge {
+    border-bottom: 4px solid black;
+}
+
+.as_image td.type-none {
+    background: none;
+}
+
+.as_image td.empty {
+    border: none;
+}
+
+.as_image td.type-chest .mapViewObject {
+    left: -12px;
+    font-size: 72px;
+    letter-spacing: -2px;
+    line-height: 190px;
+    top: 27px; /* Я не понимаю, почему при создании картинки текст ниже, чем на экране, но это смещение спасает */
+}
+
+.as_image td.type-flag .mapViewObject {
+    position: relative;
+    /* top: 8px; */
+    top: -10px; /* Я не понимаю, почему при создании картинки текст ниже, чем на экране, но это смещение спасает */
+    font-size: 84px;
+    transform: rotate(4deg);
+    line-height: 148px;
+}
+
+.as_image td.border-bottom-river:before {
+    width: 206px;
+    height: 20px;
+    top: 189px;
+    left: -3px;
+}
+
+.as_image td.border-right-river:after {
+    width: 20px;
+    height: 206px;
+    left: 189px;
+    top: -3px;
+}
+
+/* Мини-костыль, чтобы река не вытарчивала за край карты */
+.as_image td.border-bottom-river.border-right-edge:before {
+    width: 204px;
+}
+
+.as_image td.border-right-river.border-bottom-edge:after {
+    height: 204px;
 }
