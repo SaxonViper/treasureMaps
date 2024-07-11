@@ -14,20 +14,22 @@
         </div>
 
         <div id="mapDetails" v-else :class="{as_image: preparingImage}">
-            <div class="mapViewHeader">
-                <input v-model="mapData.title" type="text" class="mapEditTitle" v-if="isEditing">
-                <span v-else>{{mapData.title}}</span>
-            </div>
-            <div class="mapViewBody">
-                <table class="mapViewTable" ref="mapViewTable">
-                    <tr v-for="(cellsRow, rowNumber) in mapData.cells">
-                        <td v-for="(cell, colNumber) in cellsRow" v-bind:class="[getCellClasses(cell), {editable: editButtonChecked}]" @click="editTableCell(rowNumber, colNumber)">
-                            <div v-bind:class="['mapViewObject']">
-                                {{getCellContent(cell)}}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+            <div class="mapView" ref="mapView" v-bind:class='["height-" + mapData.height, "width-" + mapData.width]'>
+                <div class="mapViewHeader" v-bind:class="{long: mapData.title.length > 16, superLong: mapData.title.length > 21}">
+                    <input v-model="mapData.title" type="text" class="mapEditTitle" v-if="isEditing && !preparingImage">
+                    <span v-else>{{mapData.title}}</span>
+                </div>
+                <div class="mapViewBody">
+                    <table class="mapViewTable" ref="mapViewTable">
+                        <tr v-for="(cellsRow, rowNumber) in mapData.cells">
+                            <td v-for="(cell, colNumber) in cellsRow" v-bind:class="[getCellClasses(cell), {editable: editButtonChecked}]" @click="editTableCell(rowNumber, colNumber)">
+                                <div v-bind:class="['mapViewObject']">
+                                    {{getCellContent(cell)}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
 
             <div class="editMapWrapper" v-if="isEditable">
@@ -548,23 +550,19 @@
             },
             reindexFlags() {
                 let flagNumber = 0;
-                for (let rowNumber in this.mapData.cells) {
-                    for (let colNumber in this.mapData.cells[rowNumber]) {
-                        if (this.mapData.cells[rowNumber][colNumber].type === 'flag') {
+                for (let col = 1; col <= this.mapData.width; col++) {
+                    for (let row = 1; row <= this.mapData.height; row++) {
+                        if (this.mapData.cells[row][col].type === 'flag') {
                             flagNumber++;
-                            this.mapData.cells[rowNumber][colNumber].object_param = flagNumber;
+                            this.mapData.cells[row][col].object_param = flagNumber;
                         }
                     }
                 }
             },
-            prepareImage() {
-                // Вид для генерации изображения отличается от обычного: подготовим его
-                this.preparingImage = true;
-            },
             mapToImage() {
                 this.preparingImage = true;
 
-                const el = this.$refs.mapViewTable;
+                const el = this.$refs.mapView;
                 const options = {
                     type: 'dataURL'
                 };

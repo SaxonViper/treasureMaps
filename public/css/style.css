@@ -109,14 +109,14 @@
 
 .type-jungle {
     /*background: lawngreen;*/
-    background: url(../images/jungle1.png);
+    background: url(../images/jungle5.png);
     background-size: contain;
 }
 
 
 .type-desert {
     /*background: cornsilk;*/
-    background: url(../images/desert1.png);
+    background: url(../images/desert3.png);
     background-size: contain;
 }
 
@@ -215,7 +215,7 @@
 }
 
 .type-village {
-    background: url(../images/hut.png);
+    background: url(../images/hut2.png);
     background-size: contain;
 }
 
@@ -238,7 +238,7 @@
 }
 
 .type-guard {
-    background: url(../images/swords.png) no-repeat center center;
+    background: url(../images/swords2.png) no-repeat center center;
     background-size: contain;
 }
 
@@ -388,9 +388,40 @@
 
 /* А тут будут настройки для "распечатки" карт, т.е. представления их как картинок */
 .as_image {
-    min-width: 1500px;
+    /* min-width: 1500px; */
+}
+
+.as_image .mapView {
     overflow-x: scroll;
+    width: 1500px;
+    height: 2121px;
     background: white;
+}
+
+.as_image .mapViewHeader {
+    font-size: 120px;
+    margin: 150px auto 150px;
+    text-align: center;
+    font-family: "Merriweather", serif;
+    font-weight: 500;
+    word-spacing: 0.3em;
+}
+
+.as_image .mapView.height-8 .mapViewHeader {
+    margin: 100px auto 100px;
+}
+
+.as_image .mapViewHeader.long {
+    font-size: 110px;
+}
+
+.as_image .mapViewHeader.superLong {
+    font-size: 100px;
+    word-spacing: 0.2em;
+}
+
+.as_image .mapViewTable {
+    margin: 0 auto;
 }
 
 .as_image td {

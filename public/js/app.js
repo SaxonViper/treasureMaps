@@ -2114,6 +2114,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /*import VueHtml2Canvas from 'vue-html2canvas';
 Vue.use(VueHtml2Canvas);*/
@@ -2548,23 +2550,19 @@ Vue.use(VueHtml2Canvas);*/
     },
     reindexFlags: function reindexFlags() {
       var flagNumber = 0;
-      for (var rowNumber in this.mapData.cells) {
-        for (var colNumber in this.mapData.cells[rowNumber]) {
-          if (this.mapData.cells[rowNumber][colNumber].type === 'flag') {
+      for (var col = 1; col <= this.mapData.width; col++) {
+        for (var row = 1; row <= this.mapData.height; row++) {
+          if (this.mapData.cells[row][col].type === 'flag') {
             flagNumber++;
-            this.mapData.cells[rowNumber][colNumber].object_param = flagNumber;
+            this.mapData.cells[row][col].object_param = flagNumber;
           }
         }
       }
     },
-    prepareImage: function prepareImage() {
-      // Вид для генерации изображения отличается от обычного: подготовим его
-      this.preparingImage = true;
-    },
     mapToImage: function mapToImage() {
       var _this5 = this;
       this.preparingImage = true;
-      var el = this.$refs.mapViewTable;
+      var el = this.$refs.mapView;
       var options = {
         type: 'dataURL'
       };
@@ -46361,70 +46359,97 @@ var render = function () {
             attrs: { id: "mapDetails" },
           },
           [
-            _c("div", { staticClass: "mapViewHeader" }, [
-              _vm.isEditing
-                ? _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.mapData.title,
-                        expression: "mapData.title",
-                      },
-                    ],
-                    staticClass: "mapEditTitle",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.mapData.title },
-                    on: {
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.mapData, "title", $event.target.value)
-                      },
+            _c(
+              "div",
+              {
+                ref: "mapView",
+                staticClass: "mapView",
+                class: [
+                  "height-" + _vm.mapData.height,
+                  "width-" + _vm.mapData.width,
+                ],
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "mapViewHeader",
+                    class: {
+                      long: _vm.mapData.title.length > 16,
+                      superLong: _vm.mapData.title.length > 21,
                     },
-                  })
-                : _c("span", [_vm._v(_vm._s(_vm.mapData.title))]),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "mapViewBody" }, [
-              _c(
-                "table",
-                { ref: "mapViewTable", staticClass: "mapViewTable" },
-                _vm._l(_vm.mapData.cells, function (cellsRow, rowNumber) {
-                  return _c(
-                    "tr",
-                    _vm._l(cellsRow, function (cell, colNumber) {
-                      return _c(
-                        "td",
-                        {
-                          class: [
-                            _vm.getCellClasses(cell),
-                            { editable: _vm.editButtonChecked },
+                  },
+                  [
+                    _vm.isEditing && !_vm.preparingImage
+                      ? _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.mapData.title,
+                              expression: "mapData.title",
+                            },
                           ],
+                          staticClass: "mapEditTitle",
+                          attrs: { type: "text" },
+                          domProps: { value: _vm.mapData.title },
                           on: {
-                            click: function ($event) {
-                              return _vm.editTableCell(rowNumber, colNumber)
+                            input: function ($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.mapData,
+                                "title",
+                                $event.target.value
+                              )
                             },
                           },
-                        },
-                        [
-                          _c("div", { class: ["mapViewObject"] }, [
-                            _vm._v(
-                              "\n                            " +
-                                _vm._s(_vm.getCellContent(cell)) +
-                                "\n                        "
-                            ),
-                          ]),
-                        ]
+                        })
+                      : _c("span", [_vm._v(_vm._s(_vm.mapData.title))]),
+                  ]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "mapViewBody" }, [
+                  _c(
+                    "table",
+                    { ref: "mapViewTable", staticClass: "mapViewTable" },
+                    _vm._l(_vm.mapData.cells, function (cellsRow, rowNumber) {
+                      return _c(
+                        "tr",
+                        _vm._l(cellsRow, function (cell, colNumber) {
+                          return _c(
+                            "td",
+                            {
+                              class: [
+                                _vm.getCellClasses(cell),
+                                { editable: _vm.editButtonChecked },
+                              ],
+                              on: {
+                                click: function ($event) {
+                                  return _vm.editTableCell(rowNumber, colNumber)
+                                },
+                              },
+                            },
+                            [
+                              _c("div", { class: ["mapViewObject"] }, [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(_vm.getCellContent(cell)) +
+                                    "\n                            "
+                                ),
+                              ]),
+                            ]
+                          )
+                        }),
+                        0
                       )
                     }),
                     0
-                  )
-                }),
-                0
-              ),
-            ]),
+                  ),
+                ]),
+              ]
+            ),
             _vm._v(" "),
             _vm.isEditable
               ? _c("div", { staticClass: "editMapWrapper" }, [
